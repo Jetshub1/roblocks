@@ -27,8 +27,7 @@ end
 
 -- Function to reset pets to normal size (approximate)
 local function resetPets()
-    -- Resets by dividing size back down (assuming you used x5 before)
-    local scaleSize = 1/5
+    local scaleSize = 1/5 -- reset after 5x big
     scalePets(scaleSize)
     print("[Pet Scaler] Reset all pets to normal size.")
 end
