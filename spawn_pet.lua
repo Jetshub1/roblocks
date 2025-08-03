@@ -1,12 +1,12 @@
 --[[
     spawn_pet.lua
-    Roblox Pet Spawner Script - Updated Version
+    Roblox Big Pet Spawner Script
     --------------------------------------------
     Features:
-    - Spawn your pet by typing "!pet" in chat
-    - Auto-detects a pet model from Workspace.PetTemplates
-    - No spawner part needed
-    - Pet follows the player around
+    - Spawns a pet 3x bigger than normal
+    - Spawn pet by typing "!pet" in chat
+    - Auto-detects first pet model in Workspace.PetTemplates
+    - Pet follows the player
 
     Load in executor:
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Jetshub1/roblocks/main/spawn_pet.lua"))()
@@ -16,7 +16,24 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 
--- Find any pet model in Workspace.PetTemplates
+-- Scale Model function (simple proportional scaling)
+local function scaleModel(model, scale)
+    local primary = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart")
+    if not primary then return end
+    local primaryPos = primary.Position
+
+    for _, part in ipairs(model:GetDescendants()) do
+        if part:IsA("BasePart") then
+            local relativePos = part.Position - primaryPos
+            part.Size = part.Size * scale
+            part.Position = primaryPos + (relativePos * scale)
+        elseif part:IsA("SpecialMesh") then
+            part.Scale = part.Scale * scale
+        end
+    end
+end
+
+-- Find pet template
 local function findPetTemplate()
     local petFolder = Workspace:FindFirstChild("PetTemplates")
     if not petFolder then
@@ -32,7 +49,7 @@ local function findPetTemplate()
     return nil
 end
 
--- Spawn the pet near the player and make it follow
+-- Spawn big pet
 local function spawnPet()
     local petTemplate = findPetTemplate()
     if not petTemplate then return end
@@ -42,30 +59,33 @@ local function spawnPet()
         return
     end
 
-    -- Clone the pet
+    -- Clone and scale
     local newPet = petTemplate:Clone()
-    newPet.Name = LocalPlayer.Name .. "'s Pet"
+    newPet.Name = LocalPlayer.Name .. "'s BIG Pet"
     newPet.Parent = Workspace
     newPet:SetAttribute("Owner", LocalPlayer.Name)
 
-    -- Place pet near the player
-    newPet:PivotTo(LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(2, 0, 2))
+    -- Make it 3x bigger
+    scaleModel(newPet, 3)
+
+    -- Place near player
+    newPet:PivotTo(LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(5, 0, 5))
 
     -- Follow loop
     task.spawn(function()
         while newPet and newPet.Parent and LocalPlayer.Character do
             local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
             if hrp then
-                newPet:PivotTo(hrp.CFrame * CFrame.new(2, 0, 2))
+                newPet:PivotTo(hrp.CFrame * CFrame.new(5, 0, 5))
             end
             task.wait(0.5)
         end
     end)
 
-    print("[Pet Spawner] Spawned pet: " .. newPet.Name)
+    print("[Pet Spawner] Spawned BIG pet: " .. newPet.Name)
 end
 
--- Listen for chat command
+-- Chat command
 LocalPlayer.Chatted:Connect(function(msg)
     msg = string.lower(msg)
     if msg == "!pet" then
@@ -73,4 +93,4 @@ LocalPlayer.Chatted:Connect(function(msg)
     end
 end)
 
-print("[Pet Spawner] Type !pet in chat to spawn your pet.")
+print("[Pet Spawner] Type !pet in chat to spawn your BIG pet.")
