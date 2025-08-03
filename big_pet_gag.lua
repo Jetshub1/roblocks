@@ -2,7 +2,7 @@
 -- Author: Jetshub custom version
 
 -- 1️⃣ Load Mozil Hub Keyless Pet & Seed Spawner
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Jetshub1/roblocks/main/mozi_gag.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-xyzs/GAG/refs/heads/main/GrowAGardenXE"))()
 
 -- 2️⃣ Wait for game and hub to fully load
 task.wait(5)
